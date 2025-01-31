@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
+import gendiff from '../src/index.js';
 
 const program = new Command();
 
@@ -15,4 +16,4 @@ program
     console.log(diff);
   });
 
-program.parse();
+program.parse(process.argv);
