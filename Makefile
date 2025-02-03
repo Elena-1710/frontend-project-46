@@ -14,16 +14,14 @@ runJson:
 	gendiff './__fixtures__/file1.json' './__fixtures__/file2.json' --format json
 
 lint:
-	npx eslint
+	npx eslint .
 
 lint-fix:
 	npx eslint --fix .
 
-tests:
-	npm test --watchAll
-	npx jest --coverage
-
 test-coverage:
-	npm test --coverage --coverageProvider=v8	
-start:
-	node bin/gendiff __fixtures__/file1.json __fixtures__/file2.json
+	NODE_OPTIONS=--experimental-vm-modules  npx jest --coverage
+test-watch:
+	NODE_OPTIONS=--experimental-vm-modules  npx jest --watch
+test:
+	NODE_OPTIONS=--experimental-vm-modules  npx jest
