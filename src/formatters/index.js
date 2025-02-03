@@ -1,20 +1,19 @@
+import _ from 'lodash';
 import stylish from './stylish.js';
+import json from './json.js';
 import plain from './plain.js';
 
-const formatter = (node, format) => {
-  switch (format) {
-    case 'stylish':
-      return stylish(node);
-
-    case 'plain':
-      return plain(node);
-
-    case 'json':
-      return JSON.stringify(node);
-
-    default:
-      throw new Error(`Unknown format: '${format}'`);
-  }
+const formatters = {
+  stylish,
+  plain,
+  json,
 };
 
-export default formatter;
+const format = (file, formatName = 'stylish') => {
+  if (!_.has(formatters, formatName)) {
+    throw new Error('Unknown format!');
+  }
+  return formatters[formatName](file);
+};
+
+export default format;

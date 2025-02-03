@@ -1,50 +1,24 @@
 import _ from 'lodash';
 
-const comparisonDepth = (obj1, obj2) => {
-  const newObj = _.union(_.keys(obj1), _.keys(obj2));
+const objectDiff = (file1, file2) => {
+  const keys1 = _.keys(file1);
+  const keys2 = _.keys(file2);
+  const keys = _.sortBy(_.union(keys1, keys2));
 
-  const sortKeys = _.sortBy(newObj);
-
-  return sortKeys.map((key) => {
-    if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-      return {
-        key,
-        children: comparisonDepth(obj1[key], obj2[key]),
-        type: 'nested',
-      };
+  return keys.map((key) => {
+    const value1 = file1[key];
+    const value2 = file2[key];
+    if (_.isObject(value1) && _.isObject(value2)) {
+      return { key, type: 'nested', children: objectDiff(value1, value2) };
+    } if (!_.has(file1, key)) {
+      return { key, type: 'added', value: value2 };
+    } if (!_.has(file2, key)) {
+      return { key, type: 'removed', value: value1 };
+    } if (!_.isEqual(value1, value2)) {
+      return { key, type: 'updated', value: { value1, value2 } };
     }
-
-    if (!_.has(obj1, key) && _.has(obj2, key)) {
-      return {
-        key,
-        value: obj2[key],
-        type: 'added',
-      };
-    }
-
-    if (_.has(obj1, key) && !_.has(obj2, key)) {
-      return {
-        key,
-        value: obj1[key],
-        type: 'deleted',
-      };
-    }
-
-    if (!_.isEqual(obj1[key], obj2[key])) {
-      return {
-        key,
-        value1: obj1[key],
-        value2: obj2[key],
-        type: 'changed',
-      };
-    }
-
-    return {
-      key,
-      value: obj1[key],
-      type: 'unchanged',
-    };
+    return { key, type: 'equal', value: value1 };
   });
 };
 
-export default comparisonDepth;
+export default objectDiff;

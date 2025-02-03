@@ -1,21 +1,30 @@
 import { readFileSync } from 'fs';
 import path from 'path';
-import { cwd } from 'process';
-import parse from './parsers.js';
-import comparisonDepth from './comparisonDepth.js';
-import formatter from './formatters/index.js';
+import parseFile from './parsers.js';
+import objectDiff from './comparisonDepth.js';
+import format from './formatters/index.js';
 
-const getPath = (filepath) => path.resolve(cwd(), filepath);
-const readFile = (filepath) => readFileSync(getPath(filepath), 'utf-8');
-const getExtension = (filepath) => path.extname(filepath).split('.')[1];
+const buildFullPath = (filepath) => path.resolve(process.cwd(), filepath);
 
-const gendiff = (filepath1, filepath2, format = 'stylish') => {
-  const obj1 = parse(readFile(filepath1), getExtension(filepath1));
-  const obj2 = parse(readFile(filepath2), getExtension(filepath2));
+const getExtension = (filepath) => path.extname(filepath).slice(1).toLowerCase();
 
-  const diffTree = comparisonDepth(obj1, obj2);
+const readFileData = (filepath) => readFileSync(filepath, 'utf-8');
 
-  return formatter(diffTree, format);
+const loadData = (file) => {
+  const fullPath = buildFullPath(file);
+  const extension = getExtension(file);
+  const readFile = readFileData(fullPath);
+  return parseFile(readFile, extension);
 };
 
-export default gendiff;
+const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
+  const parsedFile1 = loadData(filepath1);
+  const parsedFile2 = loadData(filepath2);
+
+  const getDiff = objectDiff(parsedFile1, parsedFile2);
+  const formattedFile = format(getDiff, formatName);
+
+  return formattedFile;
+};
+
+export default genDiff;

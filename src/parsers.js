@@ -1,17 +1,17 @@
-import YAML from 'js-yaml';
+import yaml from 'js-yaml';
+import _ from 'lodash';
 
-const parse = (file, extension) => {
-  switch (extension) {
-    case 'json':
-      return JSON.parse(file);
-
-    case 'yaml':
-    case 'yml':
-      return YAML.load(file);
-
-    default:
-      throw new Error(`Unknown format: ${extension}`);
-  }
+const formats = {
+  json: JSON.parse,
+  yml: yaml.load,
+  yaml: yaml.load,
 };
 
-export default parse;
+const parseFile = (file, extension) => {
+  if (!_.has(formats, extension)) {
+    throw new Error('Unknown extension!');
+  }
+  return formats[extension](file);
+};
+
+export default parseFile;

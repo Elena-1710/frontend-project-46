@@ -1,65 +1,46 @@
 import _ from 'lodash';
 
-const status = {
-  added: '+',
-  deleted: '-',
-  unchanged: ' ',
-  nested: ' ',
-};
-
-const getIndent = (depth, correctSize = 0) => {
-  const replacer = '  ';
-  const indentSize = depth * 2;
-  const currentIndent = replacer.repeat(indentSize - correctSize);
-  const bracketIndent = replacer.repeat(indentSize - 2);
-  return { currentIndent, bracketIndent };
-};
-const formatBraces = (lines, depth) => {
-  const { bracketIndent } = getIndent(depth);
-  return [
-    '{',
-    ...lines,
-    `${bracketIndent}}`,
-  ].join('\n');
-};
-const stringify = (value, depth) => {
-  if (!_.isObject(value)) {
-    return `${value}`;
-  }
-
-  const { currentIndent } = getIndent(depth);
-  const lines = Object.entries(value).map(
-    ([key, val]) => `${currentIndent}${key}: ${stringify(val, depth + 1)}`,
-  );
-
-  return formatBraces(lines, depth);
-};
-const stylish = (node, depth = 1) => {
-  const result = node.map(({
-    key, value, type, value1, value2, children,
-  }) => {
-    const { currentIndent } = getIndent(depth, 1);
-
-    switch (type) {
-      case 'added':
-        return `${currentIndent}${status.added} ${key}: ${stringify(value, depth + 1)}`;
-      case 'deleted':
-        return `${currentIndent}${status.deleted} ${key}: ${stringify(value, depth + 1)}`;
-      case 'changed':
-        return [
-          `${currentIndent}${status.deleted} ${key}: ${stringify(value1, depth + 1)}`,
-          `${currentIndent}${status.added} ${key}: ${stringify(value2, depth + 1)}`,
-        ].join('\n');
-      case 'nested':
-        return `${currentIndent}${status.nested} ${key}: ${stylish(children, depth + 1)}`;
-      case 'unchanged':
-        return `${currentIndent}${status.unchanged} ${key}: ${stringify(value, depth + 1)}`;
-      default:
-        throw new Error(`Unknown type: ${type}`);
+const stringify = (value, replacer, depth) => {
+  const iter = (currentValue, currentDepth) => {
+    if (!_.isObject(currentValue)) {
+      return `${currentValue}`;
     }
-  });
 
-  return formatBraces(result, depth);
+    const currentIndent = replacer.repeat(currentDepth);
+    const bracketIndent = replacer.repeat(currentDepth - 1);
+    const lines = Object
+      .entries(currentValue)
+      .map(([key, val]) => `${currentIndent}${key}: ${iter(val, currentDepth + 1)}`);
+
+    return ['{', ...lines, `${bracketIndent}}`].join('\n');
+  };
+  return iter(value, depth);
+};
+
+const stylish = (tree) => {
+  const iter = (node, depth) => {
+    const replacer = '    ';
+    const currentIndent = replacer.repeat(depth);
+    const bracketIndent = replacer.repeat(depth - 1);
+    const result = node.flatMap(({
+      key, type, value, children,
+    }) => {
+      switch (type) {
+        case 'nested':
+          return `${currentIndent.slice(2)}  ${key}: ${iter(children, depth + 1)}`;
+        case 'added':
+          return `${currentIndent.slice(2)}+ ${key}: ${stringify(value, replacer, depth + 1)}`;
+        case 'removed':
+          return `${currentIndent.slice(2)}- ${key}: ${stringify(value, replacer, depth + 1)}`;
+        case 'updated':
+          return `${currentIndent.slice(2)}- ${key}: ${stringify(value.value1, replacer, depth + 1)}\n${currentIndent.slice(2)}+ ${key}: ${stringify(value.value2, replacer, depth + 1)}`;
+        default:
+          return `${currentIndent.slice(2)}  ${key}: ${stringify(value, replacer, depth + 1)}`;
+      }
+    });
+    return ['{', ...result, `${bracketIndent}}`].join('\n');
+  };
+  return iter(tree, 1);
 };
 
 export default stylish;

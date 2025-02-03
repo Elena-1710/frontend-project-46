@@ -1,38 +1,38 @@
-const formatValue = (value) => {
-  if (typeof value === 'object' && value !== null) {
+import _ from 'lodash';
+
+const getRightValue = (value) => {
+  if (_.isObject(value)) {
     return '[complex value]';
   }
-
-  if (typeof value === 'string') {
+  if (_.isString(value)) {
     return `'${value}'`;
   }
-
-  return value;
+  return String(value);
 };
 
-const plain = (diff, path = '') => {
-  const formatItem = (item, currentPath) => {
-    const fullPath = currentPath ? `${currentPath}.${item.key}` : item.key;
-
-    switch (item.type) {
-      case 'added':
-        return `Property '${fullPath}' was added with value: ${formatValue(item.value)}`;
-      case 'deleted':
-        return `Property '${fullPath}' was removed`;
-      case 'changed':
-        return `Property '${fullPath}' was updated. From ${formatValue(item.value1)} to ${formatValue(item.value2)}`;
-      case 'nested':
-        return plain(item.children, fullPath);
-      default:
-        throw new Error(`Unknown type: ${item.type}`);
-    }
+const plain = (data) => {
+  const iter = (tree, path = '') => {
+    const result = tree.flatMap(({
+      key, type, value, children,
+    }) => {
+      const currentPath = ([...path, key]);
+      const fullPath = currentPath.join('.');
+      switch (type) {
+        case 'nested':
+          return iter(children, currentPath);
+        case 'added':
+          return `Property '${fullPath}' was added with value: ${getRightValue(value)}`;
+        case 'removed':
+          return `Property '${fullPath}' was removed`;
+        case 'updated':
+          return `Property '${fullPath}' was updated. From ${getRightValue(value.value1)} to ${getRightValue(value.value2)}`;
+        default:
+          return null;
+      }
+    });
+    return result;
   };
-
-  const result = diff
-    .filter((item) => item.type !== 'unchanged')
-    .map((item) => formatItem(item, path));
-
-  return result.join('\n');
+  return iter(data).filter(((element) => element !== null)).join('\n');
 };
 
 export default plain;
