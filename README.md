@@ -5,5 +5,11 @@
 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c3c9038c9eb068bf8c4a/test_coverage)](https://codeclimate.com/github/Elena-1710/frontend-project-46/test_coverage)
 
+## Installation:
+```
+make install
+npm link
+
 ## Example comparing file.json with file.yml
 [![asciicast](https://asciinema.org/a/5ExlBsqjpnaRc5KFhT6VVssHU.svg)](https://asciinema.org/a/5ExlBsqjpnaRc5KFhT6VVssHU)
+
