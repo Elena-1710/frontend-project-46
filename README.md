@@ -1,6 +1,8 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Elena-1710/frontend-project-46/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Elena-1710/frontend-project-46/actions)
 
+[![Node CI](https://github.com/Elena-1710/frontend-project-46/actions/workflows/project-check.yml/badge.svg)](https://github.com/Elena-1710/frontend-project-46/actions/workflows/project-check.yml)
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/c3c9038c9eb068bf8c4a/maintainability)](https://codeclimate.com/github/Elena-1710/frontend-project-46/maintainability)
 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c3c9038c9eb068bf8c4a/test_coverage)](https://codeclimate.com/github/Elena-1710/frontend-project-46/test_coverage)
