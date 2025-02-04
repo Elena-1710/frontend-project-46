@@ -1,14 +1,15 @@
 import { readFileSync } from 'fs';
 import path from 'path';
+import { cwd } from 'process';
 import parseFile from './parsers.js';
 import objectDiff from './comparisonDepth.js';
 import format from './formatters/index.js';
 
-const buildFullPath = (filepath) => path.resolve(process.cwd(), filepath);
+const buildFullPath = (filepath) => path.resolve(cwd(), filepath);
 
 const getExtension = (filepath) => path.extname(filepath).slice(1).toLowerCase();
 
-const readFileData = (filepath) => readFileSync(filepath, 'utf-8');
+const readFileData = (filepath) => readFileSync(buildFullPath(filepath), 'utf-8');
 
 const loadData = (file) => {
   const fullPath = buildFullPath(file);
