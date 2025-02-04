@@ -4,7 +4,7 @@
   "description": "Project: difference calculator",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest"
   },
   "author": "Zhunina Elena",
   "license": "ISC",
