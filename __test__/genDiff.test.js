@@ -31,7 +31,7 @@ test.each([extensions])('Wrong file extension or format name', (formatName) => {
   const secondFile = buildFullPath(`file2.${formatName}`);
 
   expect(() => genDiff(wrongExtension, secondFile, 'json'))
-    .toThrowError('Unknown extension!');
+    .toThrow('Unknown extension!');
   expect(() => genDiff(firstFile, secondFile, 'smlish'))
     .toThrow('Unknown format!');
 });
