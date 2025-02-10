@@ -1,5 +1,5 @@
 ### Hexlet tests and linter status:
-[![Actions Status](https://github.com/Elena-1710/frontend-project-46/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Elena-1710/frontend-project-46/actions)
+[![hexlet-check](https://github.com/Elena-1710/frontend-project-46/actions/workflows/hexlet-check.yml/badge.svg?branch=main)](https://github.com/Elena-1710/frontend-project-46/actions/workflows/hexlet-check.yml)
 
 [![Node CI](https://github.com/Elena-1710/frontend-project-46/actions/workflows/project-check.yml/badge.svg)](https://github.com/Elena-1710/frontend-project-46/actions/workflows/project-check.yml)
 
