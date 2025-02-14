@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { cwd } from 'process';
 import parseFile from './parsers.js';
-import objectDiff from './comparisonDepth.js';
+import buildTree from './buildTree.js';
 import format from './formatters/index.js';
 
 const buildFullPath = (filepath) => path.resolve(cwd(), filepath);
@@ -22,7 +22,7 @@ const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   const parsedFile1 = loadData(filepath1);
   const parsedFile2 = loadData(filepath2);
 
-  const getDiff = objectDiff(parsedFile1, parsedFile2);
+  const getDiff = buildTree(parsedFile1, parsedFile2);
   const formattedFile = format(getDiff, formatName);
 
   return formattedFile;

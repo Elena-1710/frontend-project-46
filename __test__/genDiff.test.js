@@ -14,9 +14,9 @@ const expectedStylish = readFile('expected-stylish.txt');
 const expectedPlain = readFile('expected-plain.txt');
 const expectedJSON = readFile('expected-json.txt');
 
-const extensions = ['json', 'yml', 'yaml'];
+const formats = ['json', 'yml', 'yaml'];
 
-test.each([extensions])('Compare two files', (formatName) => {
+test.each([formats])('Compare two files', (formatName) => {
   const firstFile = buildFullPath(`file1.${formatName}`);
   const secondFile = buildFullPath(`file2.${formatName}`);
   expect(genDiff(firstFile, secondFile)).toEqual(expectedStylish);
@@ -25,13 +25,13 @@ test.each([extensions])('Compare two files', (formatName) => {
   expect(genDiff(firstFile, secondFile, 'json')).toEqual(expectedJSON);
 });
 
-test.each([extensions])('Wrong file extension or format name', (formatName) => {
+test.each([formats])('Wrong file extension or format name', (formatName) => {
   const wrongExtension = buildFullPath('file1.txt');
   const firstFile = buildFullPath(`file1.${formatName}`);
   const secondFile = buildFullPath(`file2.${formatName}`);
 
   expect(() => genDiff(wrongExtension, secondFile, 'json'))
-    .toThrow('Unknown extension!');
+    .toThrow("Unknown extension: 'txt'. Supported formats are: json, yml, yaml");
   expect(() => genDiff(firstFile, secondFile, 'smlish'))
     .toThrow('Unknown format!');
 });

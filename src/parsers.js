@@ -6,12 +6,11 @@ const formats = {
   yml: yaml.load,
   yaml: yaml.load,
 };
-
-const parseFile = (file, extension) => {
-  if (!_.has(formats, extension)) {
-    throw new Error('Unknown extension!');
+const parsers = (data, format) => {
+  if (!_.has(formats, format)) {
+    throw new Error(`Unknown extension: '${format}'. Supported formats are: ${Object.keys(formats).join(', ')}`);
   }
-  return formats[extension](file);
+  return formats[format](data);
 };
 
-export default parseFile;
+export default parsers;

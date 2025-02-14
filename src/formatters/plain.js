@@ -27,12 +27,12 @@ const plain = (data) => {
         case 'updated':
           return `Property '${fullPath}' was updated. From ${getRightValue(value.value1)} to ${getRightValue(value.value2)}`;
         default:
-          return null;
+          return [];
       }
     });
     return result;
   };
-  return iter(data).filter(((element) => element !== null)).join('\n');
+  return iter(data).join('\n');
 };
 
 export default plain;
