@@ -22,7 +22,7 @@ const stylish = (tree) => {
     const replacer = '    ';
     const currentIndent = replacer.repeat(depth);
     const bracketIndent = replacer.repeat(depth - 1);
-    const result = node.flatMap(({
+    const result = node.map(({
       key, type, value, children,
     }) => {
       switch (type) {
@@ -33,12 +33,15 @@ const stylish = (tree) => {
         case 'removed':
           return `${currentIndent.slice(2)}- ${key}: ${stringify(value, replacer, depth + 1)}`;
         case 'updated':
-          return `${currentIndent.slice(2)}- ${key}: ${stringify(value.value1, replacer, depth + 1)}\n${currentIndent.slice(2)}+ ${key}: ${stringify(value.value2, replacer, depth + 1)}`;
+          return [
+            `${currentIndent.slice(2)}- ${key}: ${stringify(value.value1, replacer, depth + 1)}`,
+            `${currentIndent.slice(2)}+ ${key}: ${stringify(value.value2, replacer, depth + 1)}`,
+          ];
         default:
           return `${currentIndent.slice(2)}  ${key}: ${stringify(value, replacer, depth + 1)}`;
       }
     });
-    return ['{', ...result, `${bracketIndent}}`].join('\n');
+    return ['{', ...result.flat(), `${bracketIndent}}`].join('\n');
   };
   return iter(tree, 1);
 };

@@ -11,7 +11,9 @@ const formatters = {
 
 const format = (file, formatName = 'stylish') => {
   if (!_.has(formatters, formatName)) {
-    throw new Error('Unknown format!');
+    throw new Error(
+      `Unknown format: '${formatName}'! Supported formats are: ${Object.keys(formatters).join(', ')}`
+    );
   }
   return formatters[formatName](file);
 };
