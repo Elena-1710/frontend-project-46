@@ -27,8 +27,8 @@ test.each([formats])('Compare two files', (formatName) => {
 
 test('Wrong file extension or format name', () => {
   const wrongExtension = buildFullPath('file1.txt');
-  const firstFile = buildFullPath(`file1.json`);
-  const secondFile = buildFullPath(`file2.json`);
+  const firstFile = buildFullPath('file1.json');
+  const secondFile = buildFullPath('file2.json');
 
   expect(() => genDiff(wrongExtension, secondFile, 'json'))
     .toThrow("Unknown extension: 'txt'. Supported formats are: json, yml, yaml");
